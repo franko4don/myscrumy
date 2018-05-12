@@ -9,10 +9,23 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
      
+      {% load staticfiles %}
+      <link rel="stylesheet" href="{% static 'css/nwanzescrumy.css' %}">
     </head>
 
     <body>
         <div class="container">
+                {% if request.user.is_authenticated %}
+                <h1 class="text-center">Logged in user {{request.user.username }}</h1>
+                <p class="text-center"><a href="/accounts/logout">Logout</a></p>
+                <p class="text-center">
+                        User Group {{request.user.groups.first.name}}
+                    </p>
+                {% else %}
+                    
+                <p class="text-center"><a href="/accounts/login">Login</a></p>
+        
+                {% endif %}
             
             <table class="table table-hover">
                 <thead>
@@ -31,19 +44,47 @@
                         <tr>
                             <td><a href="{% url 'adduser' %}">+</a></td>
                             <td>
-                               {{user.first_name}}
+                               {{user.username}}
                             </td>
                             <td><a href="{% url 'addtask' %}">+</a></td>
                             <td>
                                 <ul>
-                                    {% for task in user.tasks %}
-                                        <li>{{task.description}}</li>
+                                    {% for task in user.weekly %}
+                                    {% if user.id is  task.created_by_id %}
+                                        <li>{{task.goal_description}}</li>
+                                    {% else %}
+                                    
+                                    {% endif %}
                                     {% endfor %}
                                 </ul>
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>
+                                <ul>
+                                    {% for task in user.daily %}
+                                        {% if user.id == task.created_by_id %}
+                                            <li>{{task.goal_description}}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    {% for task in user.verify %}
+                                        {% if user.id == task.created_by_id %}
+                                        <li>{{task.goal_description}}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    {% for task in user.done %}
+                                        {% if user.id == task.created_by_id %}
+                                            <li>{{task.goal_description}}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

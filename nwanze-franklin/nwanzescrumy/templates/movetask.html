@@ -13,6 +13,17 @@
   </head>
   <body>
     <div class="container">
+        {% if request.user.is_authenticated %}
+        <h1 class="text-center">Logged in user {{request.user.username }}</h1>
+        <p class="text-center"><a href="/accounts/logout">Logout</a></p>
+        <p class="text-center">
+                User Group {{request.user.groups.first.name}}
+            </p>
+        {% else %}
+            
+        <p class="text-center"><a href="/accounts/login">Login</a></p>
+
+        {% endif %}
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
 
@@ -33,7 +44,17 @@
             iziToast.success({
               title: 'OK',
               position: 'topRight',
-              message: 'Successfully created task!',
+              message: '{{message}}',
+          });
+        </script>
+      {% endif %}
+
+      {% if error %}
+        <script>
+            iziToast.error({
+              title: 'Oops!',
+              position: 'topRight',
+              message: '{{message}}',
           });
         </script>
       {% endif %}
