@@ -26,14 +26,13 @@ def index(request):
         weekly = GoalStatus.objects.filter(status='WTS').first()
         verify = GoalStatus.objects.filter(status='Verify').first()
         done = GoalStatus.objects.filter(status='Done').first()
-        group = request.user.groups.first();
         obj.tasks = assigned
         obj.daily = ScrumyGoal.objects.filter(status_id=daily.id)
         obj.weekly = ScrumyGoal.objects.filter(status_id=weekly.id)
         obj.verify = ScrumyGoal.objects.filter(status_id=verify.id)
         obj.done = ScrumyGoal.objects.filter(status_id=done.id)
         users.append(obj)
-    return render(request, 'index.html', {'users': users, 'group' : group})
+    return render(request, 'index.html', {'users': users})
 
 
 def user(request):
