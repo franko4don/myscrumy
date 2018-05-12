@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from django.http import Http404
 from django.http import HttpResponse
 import json
@@ -7,8 +7,23 @@ from django.contrib.auth.models import User, Group
 from .form import *
 from django.views.generic import ListView
 from .permissions import Permissions
-# Create your views here.
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 
 class ScrumyGoalView(ListView):
     model = ScrumyGoal
@@ -66,21 +81,13 @@ def add_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            user_name = form.cleaned_data['user_name']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-
-            User.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                user_name=user_name,
-                email=email,
-                password=password,
-            )
-            return render(request, 'adduser.html', {'form': UserForm(), 'success': True})
-
+            # form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = User.objects.create_user(username=username, password=password)
+            # return HttpResponse(username)
+            login(request, user)
+            # return redirect('scrumy')
         return render(request, 'adduser.html', {'form': form})
 
     else:

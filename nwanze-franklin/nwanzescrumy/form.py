@@ -5,30 +5,37 @@ from nwanzescrumy.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 
-# class UserForm(forms.Form):
-#     first_name = forms.CharField(label='First name', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-#     last_name = forms.CharField(label='Last name', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-#     username = forms.CharField(label='User name', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-#     email = forms.EmailField(label='Email', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-#     password = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput(attrs={'class':'form-control'}))
+class UserForm(forms.Form):
+    username = forms.CharField(label='User name', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
+    # email = forms.EmailField(label='Email', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
+    password1 = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
-#     class Meta:
-#         model = ScrumyUser
-#         fields = ['first_name', 'last_name', 'username', 'email', 'password']
+    class Meta:
+        model = User
+        fields = ['firstname', 'lastname', 'username', 'email', 'password1', 'password2']
 
-#     def clean_email(self):
-#         data = self.cleaned_data['email']
+    def clean_email(self):
+        data = self.cleaned_data['email']
         
-#         if ScrumyUser.objects.filter(email=data).count() > 0:
-#             raise ValidationError(_('Email Already Exists'))
-#         return data
+        if User.objects.filter(email=data).count() > 0:
+            raise ValidationError(_('Email Already Exists'))
+        return data
     
-#     def clean_username(self):
-#         data = self.cleaned_data['username']
+    def clean_username(self):
+        data = self.cleaned_data['username']
         
-#         if ScrumyUser.objects.filter(username=data).count() > 0:
-#             raise ValidationError(_('user name Already Exists'))
-#         return data
+        if User.objects.filter(username=data).count() > 0:
+            raise ValidationError(_('user name Already Exists'))
+        return data
+        
+    def clean_password2(self):
+        if 'password1' in self.cleaned_data:
+            password1 = self.cleaned_data['password1']
+            password2 = self.cleaned_data['password2']
+            if password1 == password2:
+                return password2
+        raise forms.ValidationError('Passwords do not match.')
 
 
 class GoalForm(forms.Form):
