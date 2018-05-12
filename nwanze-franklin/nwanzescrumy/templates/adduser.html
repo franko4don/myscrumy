@@ -28,15 +28,25 @@
 
     </div>
     
-      {% if success %}
-        <script>
-            iziToast.success({
-              title: 'OK',
-              position: 'topRight',
-              message: 'Successfully inserted record!',
-          });
-        </script>
-      {% endif %}
+    {% if success %}
+    <script>
+        iziToast.success({
+          title: 'OK',
+          position: 'topRight',
+          message: '{{message}}',
+      });
+    </script>
+  {% endif %}
+
+  {% if error %}
+    <script>
+        iziToast.error({
+          title: 'Oops!',
+          position: 'topRight',
+          message: '{{message}}',
+      });
+    </script>
+  {% endif %}
     
   </body>
 </html>

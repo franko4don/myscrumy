@@ -28,7 +28,7 @@ class UserForm(forms.Form):
         if User.objects.filter(username=data).count() > 0:
             raise ValidationError(_('user name Already Exists'))
         return data
-        
+
     def clean_password2(self):
         if 'password1' in self.cleaned_data:
             password1 = self.cleaned_data['password1']
@@ -68,8 +68,17 @@ class ChangeGoalStatusForm(forms.Form):
     )
     goal_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     status = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
-    assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=USERS)
+    # assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=USERS)
     class Meta:
         model = ScrumyGoal
         fields = ['goal_description', 'status']
     
+class TaskAssign(forms.Form):
+
+    USERS =(
+        [(obj.id, obj.username) for obj in User.objects.all()]
+    )
+    assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=USERS)
+    class Meta:
+        model = ScrumyGoal
+        fields = ['goal_description', 'status', 'assigned_to']

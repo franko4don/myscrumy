@@ -25,7 +25,7 @@
 
         {% endif %}
         <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+            <div class="col-md-6">
 
                 <form action="" class="form form-vertical" method="POST" role="form">
                   <legend>Task Edit Form</legend>
@@ -34,6 +34,16 @@
                   <button type="submit" class="btn btn-primary">Move task</button>
                 </form>
             </div>
+
+            <div class="col-md-6">
+
+              <form action="{% url 'assign' goal%}" class="form form-vertical" method="POST" role="form">
+                <legend>Task Assign Form</legend>
+                {% csrf_token %}
+                  {{formassign.as_p}}
+                <button type="submit" class="btn btn-primary">Assign To</button>
+              </form>
+          </div>
 
         </div>
 

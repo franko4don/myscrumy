@@ -63,7 +63,7 @@
                             <td>{{goal.goal_description}}</td>
                             <td>{{goal.status.status}}</td>
                             <td>{{goal.created_by.username}}</td>
-                            <td>{{goal.user.user_name}}</td>
+                            <td>{{goal.user.username}}</td>
                         <td> <a class="btn btn-primary" href="{% url 'edittask' goal.id%}">Edit</a></td>
                         </tr>
                     {% endfor %}

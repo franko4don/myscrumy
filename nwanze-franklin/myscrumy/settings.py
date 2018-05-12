@@ -25,7 +25,7 @@ SECRET_KEY = '5=uadc#l7gg(!(u9kym&f=0gvz$!wag(+ddps2@^og)mu+##ka'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['scrumy.bluebecks.com','127.0.0.1']
 
 
 # Application definition

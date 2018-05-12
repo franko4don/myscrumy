@@ -13,6 +13,7 @@ urlpatterns = [
     path('detail', views.detail),
     path('generic', ScrumyGoalView.as_view(), name="generic"),
     path('movetask', views.move_task, name='movetask'),
+    path('assign/<int:goal_id>', views.assign_task, name='assign'),
     path('edittask/<int:goal_id>', views.move_task, name='edittask'),
     path('user/view/<int:user_id>', views.user_profile),
 
