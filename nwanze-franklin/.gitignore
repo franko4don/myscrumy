@@ -2,5 +2,7 @@
 /Lib
 /Include
 /myscrumy/settings.py
+/nwanzescrumy/__psycache__
+/myscrumy/__psycache__
 /.idea
 /__psycache__
