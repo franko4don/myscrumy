@@ -4,6 +4,7 @@ import json
 from nwanzescrumy.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
+from django.http import HttpResponse, HttpResponseRedirect
 
 class UserForm(forms.Form):
     username = forms.CharField(label='User name', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -59,13 +60,10 @@ class GoalForm(forms.Form):
 
 
 class ChangeGoalStatusForm(forms.Form):
-    status = [(obj.id, obj.status) for obj in GoalStatus.objects.all()]
+    stata = [(obj.id, obj.status) for obj in GoalStatus.objects.all()]
     CHOICES= (
-            status
+            stata
         )
-    USERS =(
-        [(obj.id, obj.username) for obj in User.objects.all()]
-    )
     goal_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     status = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=CHOICES)
     # assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=USERS)
@@ -74,11 +72,12 @@ class ChangeGoalStatusForm(forms.Form):
         fields = ['goal_description', 'status']
     
 class TaskAssign(forms.Form):
-
-    USERS =(
+    
+    def __init__(self, *args, **kwargs):
+        super(TaskAssign, self).__init__(*args, **kwargs)        
+    assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=(
         [(obj.id, obj.username) for obj in User.objects.all()]
-    )
-    assigned_to = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=USERS)
+    ))
     class Meta:
         model = ScrumyGoal
         fields = ['goal_description', 'status', 'assigned_to']

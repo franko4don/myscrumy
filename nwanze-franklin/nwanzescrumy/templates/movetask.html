@@ -36,11 +36,22 @@
             </div>
 
             <div class="col-md-6">
-
+                User {{assigned_to}}
               <form action="{% url 'assign' goal%}" class="form form-vertical" method="POST" role="form">
                 <legend>Task Assign Form</legend>
                 {% csrf_token %}
-                  {{formassign.as_p}}
+                  <label>Assigned To</label>
+                  <select name="assigned_to" class="form-control">
+                    {% for user in users %}
+                    {% if assigned_to == user.id %}
+                      <option value="{{user.id}}" selected>{{user.username}}</option>
+                    {% else %}
+                      <option value="{{user.id}}" >{{user.username}}</option>
+                    {% endif %}
+
+                    {% endfor %}
+                  </select>
+                  <br>
                 <button type="submit" class="btn btn-primary">Assign To</button>
               </form>
           </div>

@@ -84,6 +84,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+    
 
 
 # Password validation
@@ -124,4 +125,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/scrumy'
+LOGOUT_REDIRECT_URL = '/scrumy'
 STATIC_ROOT = "/var/www/myscrumy/nwanze-franklin/nwanzescrumy/static"

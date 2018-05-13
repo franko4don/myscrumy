@@ -78,6 +78,9 @@ def move_goal(request, task_id):
 
 
 def add_user(request):
+    # if request.user.is_authenticated:
+    #         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
@@ -125,27 +128,29 @@ def add_task(request):
 
 def assign_task(request, goal_id):
     goal = ScrumyGoal.objects.filter(id=goal_id).first()
+    assigned_to = goal.assigned_to
+    users = User.objects.all()
     if request.method == "POST":
         
         if not request.user.is_authenticated:
-                return render(request, 'movetask.html', {'formassign':TaskAssign(), 'goal':goal_id,'form': ChangeGoalStatusForm(initial={'goal': goal.status, 'goal_description': goal.goal_description}), 'error': True, 'message': 'You need to be logged in to perform this operation!'})
-        form = TaskAssign(request.POST)
+            return render(request, 'movetask.html', {'users':users, 'assigned_to':assigned_to, 'goal':goal_id,'form': ChangeGoalStatusForm(initial={'goal': goal.status, 'goal_description': goal.goal_description}), 'error': True, 'message': 'You need to be logged in to perform this operation!'})
         
-        if form.is_valid():
-           assigned_to = form.cleaned_data['assigned_to']
+        assigned_to = request.POST.get("assigned_to", "")      
+        goal.assigned_to = assigned_to
+        # return HttpResponse(assigned_to)
+        goal.save()
            
-           goal.assigned_to = assigned_to
-           goal.save()
-        #    return HttpResponse(assigned_to)
-           return HttpResponseRedirect(request.META.get('HTTP_REFERER'))  
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))  
             
 
 def move_task(request, goal_id):
     
-    goal = ScrumyGoal.objects.filter(id=goal_id).first()     
+    goal = ScrumyGoal.objects.filter(id=goal_id).first()  
+    assigned_to = goal.assigned_to
+    users = User.objects.all()
     if request.method == "POST":
         if not request.user.is_authenticated:
-                return render(request, 'movetask.html', {'formassign':TaskAssign(),'goal':goal_id,'form': ChangeGoalStatusForm(initial={'goal': goal.status, 'goal_description': goal.goal_description}), 'error': True, 'message': 'You need to be logged in to perform this operation!'})
+                return render(request, 'movetask.html', {'users':users, 'assigned_to':assigned_to, 'goal':goal_id,'form': ChangeGoalStatusForm(initial={'goal': goal.status, 'goal_description': goal.goal_description}), 'error': True, 'message': 'You need to be logged in to perform this operation!'})
         form = ChangeGoalStatusForm(request.POST)
         
         if form.is_valid():
@@ -161,14 +166,15 @@ def move_task(request, goal_id):
                 goal.status = status
                 goal.save()
                 # return HttpResponse(goal.status.id)
-                return render(request, 'movetask.html', {'formassign':TaskAssign(), 'goal':goal_id, 'form': ChangeGoalStatusForm(initial={'status': goal.status.id, 'goal_description': goal.goal_description}), 'success': True, 'message': 'Task moved to another status'})
+                return render(request, 'movetask.html', {'users':users, 'assigned_to':assigned_to, 'goal':goal_id, 'form': ChangeGoalStatusForm(initial={'status': goal.status.id, 'goal_description': goal.goal_description}), 'success': True, 'message': 'Task moved to another status'})
             else:
-                return render(request, 'movetask.html', {'formassign':TaskAssign(), 'goal':goal_id, 'form': ChangeGoalStatusForm(initial={'status': goal.status.id, 'goal_description': goal.goal_description}), 'error': True,'message' : 'You do not have the permission to move this task'})
-        return render(request, 'movetask.html', {'formassign':TaskAssign(initial={'assigned_to': goal.assigned_to}), 'goal':goal_id, 'form':form})
+                return render(request, 'movetask.html', {'users':users, 'assigned_to':assigned_to, 'goal':goal_id, 'form': ChangeGoalStatusForm(initial={'status': goal.status.id, 'goal_description': goal.goal_description}), 'error': True,'message' : 'You do not have the permission to move this task'})
+        return render(request, 'movetask.html', {'users':users, 'assigned_to':assigned_to, 'goal':goal_id, 'form':form})
 
     else:
         form = ChangeGoalStatusForm(initial={'status': goal.status.id, 'goal_description': goal.goal_description})
-        return render(request, 'movetask.html', {'formassign':TaskAssign(initial={'assigned_to': goal.assigned_to}), 'goal':goal_id, 'form': form})
+        # user = User.objects.all().count()
+        return render(request, 'movetask.html', {'users':users,'assigned_to': assigned_to, 'goal':goal_id, 'form': form})
 
 
 def message(status, message):
